@@ -10,6 +10,8 @@
             [spec-tools.core :as st]
             [spec-tools.spec :as spec]))
 
+;; Example code mostly from https://github.com/metosin/reitit
+
 ;; wrap into Spec Records to enable runtime conforming
 (s/def ::x spec/int?)
 (s/def ::y spec/int?)
@@ -48,7 +50,7 @@
    (ring/router
     routes
     {:data
-     {:muuntaja m/instance
+     {:muuntaja   m/instance
       :middleware [params/wrap-params
                    muuntaja/format-middleware
                    coercion/coerce-exceptions-middleware
@@ -58,13 +60,15 @@
 
 (defn start [{:keys [port] :as config}]
   {:pre (s/valid? ::config config)}
-  (let [server (jetty/run-jetty #'app {:port port, :join? false})]
+  (let [server (jetty/run-jetty #'app {:port port :join? false})]
     (println "server running in port" port)
     server))
 
 (defn ->int [s]
   (st/coerce spec/int? s st/string-transformer))
 
+;; Heroku uses PORT env var. Port 3000 is for dev.
 (defn -main [& args]
-  (let [port (or (->int (System/getenv "PORT")) 3000)]
+  (let [port (or (->int (System/getenv "PORT"))
+                 3000)]
     (start {:port port})))
