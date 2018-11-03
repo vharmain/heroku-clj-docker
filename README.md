@@ -48,6 +48,9 @@ Commiting any change to `heroku` remote triggers deploy.
 git add -A
 git commit -m "My first commit"
 git push heroku master
+
+# Watch logs
+heroku logs --tail
 ```
 
 ### Running locally
@@ -59,6 +62,10 @@ docker-compose up web
 ## Observations and notes
 
 * One of the least painful Docker deployment experiences I've had
+* I first tried running the container with `CMD clj -m example.server`
+  but clj somehow fails to find `.m2` and downloads dependencies each
+  time the container is started. I wasn't able to reproduce this issue
+  locally with Docker. See `Dockerfile-no-uberjar`.
 * Heroku has [some
   limitations](https://devcenter.heroku.com/articles/container-registry-and-runtime#known-issues-and-limitations)
   with Docker
