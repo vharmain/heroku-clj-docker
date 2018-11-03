@@ -5,4 +5,4 @@ COPY deps.edn /usr/src/app/
 RUN clj -Sforce < /dev/null
 COPY . /usr/src/app
 RUN clj -A:depstar -m hf.depstar.uberjar server.jar
-CMD java -cp server.jar clojure.main -m example.server
+CMD java -Xmx400m -cp server.jar clojure.main -m example.server
