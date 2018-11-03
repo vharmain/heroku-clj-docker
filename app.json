@@ -1,0 +1,8 @@
+{
+  "name": "heroku-clj-docker",
+  "description": "Dockerized tools-deps Clojure app using heroku.yml",
+  "repository": "https://git.heroku.com/heroku-clj-docker.git",
+  "logo": "",
+  "keywords": ["clojure", "docker", "toy"],
+  "stack": "container"
+}
