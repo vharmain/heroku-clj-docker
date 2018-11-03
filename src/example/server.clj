@@ -19,22 +19,29 @@
 (s/def ::config (s/keys :req-un [::port]))
 
 (def routes
-  ["/spec"
-   {:coercion reitit.coercion.spec/coercion}
-   ["/plus"
-    {:responses {200 {:body (s/keys :req-un [::total])}}
-     :get
-     {:summary    "plus with query-params"
-      :parameters {:query (s/keys :req-un [::x ::y])}
-      :handler    (fn [{{{:keys [x y]} :query} :parameters}]
-                    {:status 200
-                     :body   {:total (+ x y)}})}
-     :post
-     {:summary    "plus with body-params"
-      :parameters {:body (s/keys :req-un [::x ::y])}
-      :handler    (fn [{{{:keys [x y]} :body} :parameters}]
-                    {:status 200
-                     :body   {:total (+ x y)}})}}]])
+  [["/"
+    {:get
+     {:handler
+      (fn [_]
+        {:status 200
+         :body   (str "<h1>Hello from Clojure!</h1>"
+                      "<a href=\"spec/plus?x=1&y=2\">Try this</a>")})}}]
+   ["/spec"
+    {:coercion reitit.coercion.spec/coercion}
+    ["/plus"
+     {:responses {200 {:body (s/keys :req-un [::total])}}
+      :get
+      {:summary    "plus with query-params"
+       :parameters {:query (s/keys :req-un [::x ::y])}
+       :handler    (fn [{{{:keys [x y]} :query} :parameters}]
+                     {:status 200
+                      :body   {:total (+ x y)}})}
+      :post
+      {:summary    "plus with body-params"
+       :parameters {:body (s/keys :req-un [::x ::y])}
+       :handler    (fn [{{{:keys [x y]} :body} :parameters}]
+                     {:status 200
+                      :body   {:total (+ x y)}})}}]]])
 
 (def app
   (ring/ring-handler
@@ -54,8 +61,6 @@
   (let [server (jetty/run-jetty #'app {:port port, :join? false})]
     (println "server running in port" port)
     server))
-
-
 
 (defn ->int [s]
   (st/coerce spec/int? s st/string-transformer))
