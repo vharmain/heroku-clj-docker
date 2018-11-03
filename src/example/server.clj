@@ -7,6 +7,7 @@
             [reitit.ring.middleware.muuntaja :as muuntaja]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.params :as params]
+            [spec-tools.core :as st]
             [spec-tools.spec :as spec]))
 
 ;; wrap into Spec Records to enable runtime conforming
@@ -14,7 +15,7 @@
 (s/def ::y spec/int?)
 (s/def ::total spec/int?)
 
-(s/def ::port (s/int-in 0 (inc 65535)))
+(s/def ::port spec/int?)
 (s/def ::config (s/keys :req-un [::port]))
 
 (def routes
@@ -54,6 +55,11 @@
     (println "server running in port" port)
     server))
 
+
+
+(defn ->int [s]
+  (st/coerce spec/int? s st/string-transformer))
+
 (defn -main [& args]
-  (let [port (or (System/getenv "PORT") 3000)]
+  (let [port (or (->int (System/getenv "PORT")) 3000)]
     (start {:port port})))
