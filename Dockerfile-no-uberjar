@@ -1,0 +1,16 @@
+FROM clojure:tools-deps
+
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+# Install deps
+COPY deps.edn /usr/src/app/
+RUN clj -Sforce < /dev/null
+
+# Copy source files
+COPY . /usr/src/app
+
+# Default command to run when container starts
+CMD clj -m example.server
+
+# No need to expose any ports here since Heroku ignores EXPOSE anyways.

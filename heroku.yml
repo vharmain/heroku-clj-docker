@@ -1,6 +1,6 @@
 build:
   docker:
-    web: Dockerfile
+    web: Dockerfile-no-uberjar
 
 # See link below for more opts
 # https://devcenter.heroku.com/articles/docker-builds-heroku-yml
