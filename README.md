@@ -1,10 +1,9 @@
 # Heroku CLJ Docker
 
-Deploying [Dockerized](https://www.docker.com/)
-[Clojure](https://clojure.org/) app to [Heroku](https://heroku.com/)
-using [Docker builds with
+Using [Docker builds with
 heroku.yml](https://devcenter.heroku.com/articles/docker-builds-heroku-yml)
-beta feature.
+beta feature to deploy [Dockerized](https://www.docker.com/)
+[Clojure](https://clojure.org/) app to [Heroku](https://heroku.com/).
 
 ## Motivation
 Heroku has [great support for
@@ -53,7 +52,7 @@ git push heroku master
 heroku logs --tail
 ```
 
-### Running locally
+### Run locally
 
 ``` shell
 docker-compose up web
@@ -61,11 +60,22 @@ docker-compose up web
 
 ## Observations and notes
 
-* One of the least painful Docker deployment experiences I've had
-* I first tried running the container with `CMD clj -m example.server`
-  but clj somehow fails to find `.m2` and downloads dependencies each
-  time the container is started. I wasn't able to reproduce this issue
-  locally with Docker. See `Dockerfile-no-uberjar`.
+* One of the least painful Docker deployment experiences I've
+  had. Heroku provides excellent ergonomics what comes to developer
+  experience. Commands such as `heroku logs --tail` and `heroku run
+  bash` work similarly to 'normal' buildpacks.
+* I first tried running the app directly with `clj` (no
+  uberjaring). During build time `.m2` folder resolves under $HOME/.m2
+  but on container start clj/maven tries to lookup `.m2` relative to
+  `WORKDIR` defined in Dockerfile. In practice this meant that all
+  dependencies would be downloaded on each restart. Workaround to this
+  is to either build uberjar on build time or place the app directly
+  to users home folder and use it as the WORKDIR (see
+  [Dockerfile-no-uberjar](Dockerfile-no-uberjar)) so Maven can find
+  .m2. What is causing this? I'm not sure but I'm suspecting that some
+  ENV var supplied by Heroku is getting Maven confused where $HOME is
+  at runtime. I wasn't able to reproduce this locally with
+  docker-compose.
 * Heroku has [some
   limitations](https://devcenter.heroku.com/articles/container-registry-and-runtime#known-issues-and-limitations)
-  with Docker
+  with Docker.
