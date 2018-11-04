@@ -1,20 +1,19 @@
 FROM clojure:tools-deps
 
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+# Use non-root user
+RUN useradd -ms /bin/bash myuser
+USER myuser
+
+# Here we can use users .m2 folder without hassle
+WORKDIR /home/myuser
 
 # Install deps
-COPY deps.edn /usr/src/app/
-
-# Download deps and run the image as a non-root user
-RUN useradd -ms /bin/bash myuser
-RUN chown -R myuser /usr/src/app
-USER myuser
+COPY deps.edn .
 
 RUN clj -Sforce < /dev/null
 
 # Copy source files
-COPY . /usr/src/app
+COPY . .
 
 # Default command to run when container starts
 CMD clj -m example.server
