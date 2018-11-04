@@ -5,6 +5,12 @@ WORKDIR /usr/src/app
 
 # Install deps
 COPY deps.edn /usr/src/app/
+
+# Download deps and run the image as a non-root user
+RUN useradd -ms /bin/bash myuser
+RUN chown -R myuser /usr/src/app
+USER myuser
+
 RUN clj -Sforce < /dev/null
 
 # Copy source files
