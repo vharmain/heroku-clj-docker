@@ -8,12 +8,12 @@ USER myuser
 WORKDIR /home/myuser
 
 # Install deps
-COPY deps.edn .
+COPY deps.edn /home/myuser
 
 RUN clj -Sforce < /dev/null
 
 # Copy source files
-COPY . .
+COPY . /home/myuser
 
 # Default command to run when container starts
 CMD clj -m example.server
