@@ -3,6 +3,7 @@ services:
   web:
     build:
       context: .
-      dockerfile: Dockerfile-no-uberjar
+      dockerfile: Dockerfile
+      # dockerfile: Dockerfile-no-uberjar
     ports:
       - '3000:3000'
