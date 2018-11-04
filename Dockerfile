@@ -13,6 +13,10 @@ COPY . /usr/src/app
 # Create uberjar
 RUN clj -A:depstar -m hf.depstar.uberjar server.jar
 
+# Use non-root user to run the container
+RUN useradd -ms /bin/bash myuser
+USER myuser
+
 # Default command to run when container starts
 CMD java -Xmx400m -cp server.jar clojure.main -m example.server
 
