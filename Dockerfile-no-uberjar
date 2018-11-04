@@ -2,15 +2,13 @@ FROM clojure:tools-deps
 
 # Use non-root user
 RUN useradd -ms /bin/bash myuser
+USER myuser
 
 # Here we can use users .m2 folder without hassle
 WORKDIR /home/myuser
 
-USER myuser
-
 # Install deps
 COPY --chown=myuser deps.edn /home/myuser
-
 RUN clj -Sforce < /dev/null
 
 # Copy source files
